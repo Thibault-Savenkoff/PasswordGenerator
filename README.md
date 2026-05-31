@@ -7,3 +7,5 @@ To using it, install npm and this npm module:
 npm install live-server
 ```
 and launch the .bat or .sh file.
+
+I also did it on the [iOS' Shortcut app](https://www.icloud.com/shortcuts/3c91837f97ad4f618edac6606f410f25).
