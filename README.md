@@ -2,10 +2,7 @@
 It's a password generator written in html/css and js, using the [WebHaptics](https://haptics.lochie.me/).
 
 ## Installation
-Install [**Node.js**](https://nodejs.org) and this **npm module**:
-```console
-npm install live-server
-```
+Install [**Node.js**](https://nodejs.org).
 
 Clone this **GitHub Repo**:
 ```console
