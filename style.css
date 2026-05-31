@@ -1,0 +1,403 @@
+/* ============================================================
+   Password Generator — Apple HIG, Full Dark Theme
+   Entire page uses the dark hero treatment with radial glow.
+   ============================================================ */
+
+/* ---------- Colour Tokens (dark surface) ---------- */
+:root {
+  --page-bg:       #1d1d1f;
+  --label:         rgba(255, 255, 255, 0.92);
+  --label-2:       rgba(255, 255, 255, 0.56);
+  --label-3:       rgba(255, 255, 255, 0.32);
+  --card-bg:       rgba(255, 255, 255, 0.06);
+  --card-border:   rgba(255, 255, 255, 0.08);
+  --separator:     rgba(255, 255, 255, 0.08);
+  --sys-blue:      #2997ff;
+  --sys-green:     #30d158;
+  --sys-orange:    #ff9f0a;
+  --sys-red:       #ff453a;
+  --sys-gray5:     rgba(255, 255, 255, 0.1);
+  --toggle-on:     #30d158;
+  --toggle-off:    rgba(255, 255, 255, 0.16);
+  --fill-3:        rgba(255, 255, 255, 0.1);
+  --fill-4:        rgba(255, 255, 255, 0.06);
+  --card-shadow:   0 1px 2px rgba(0, 0, 0, 0.2),
+                   0 4px 16px rgba(0, 0, 0, 0.2);
+  --card-shadow-elevated: 0 2px 8px rgba(0, 0, 0, 0.3),
+                          0 12px 40px rgba(0, 0, 0, 0.3);
+}
+
+/* ---------- Base ---------- */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+html {
+  -webkit-text-size-adjust: 100%;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text",
+    "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 17px;
+  line-height: 1.47;
+  letter-spacing: -0.022em;
+  color: var(--label);
+  background: var(--page-bg);
+  min-height: 100dvh;
+  -webkit-tap-highlight-color: transparent;
+  position: relative;
+}
+
+/* Radial blue glow — ambient background light */
+body::before {
+  content: "";
+  position: fixed;
+  top: -10%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 800px;
+  height: 600px;
+  background: radial-gradient(ellipse at center, rgba(41, 151, 255, 0.1) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ============================================================
+   HERO
+   ============================================================ */
+.hero {
+  padding: 72px 24px 56px;
+  position: relative;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 1;
+}
+
+.hero-icon-wrap {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 88px;
+  height: 88px;
+  border-radius: 22px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.04) 100%);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  margin-bottom: 24px;
+}
+
+.hero-icon {
+  color: #ffffff;
+}
+
+.hero-title {
+  font-size: 48px;
+  font-weight: 700;
+  line-height: 1.08;
+  letter-spacing: -0.003em;
+  color: #ffffff;
+  margin-bottom: 12px;
+}
+
+.hero-subtitle {
+  font-size: 21px;
+  font-weight: 400;
+  line-height: 1.381;
+  letter-spacing: 0.011em;
+  color: rgba(255, 255, 255, 0.56);
+}
+
+@media (max-width: 480px) {
+  .hero {
+    padding: 56px 20px 44px;
+  }
+  .hero-title {
+    font-size: 36px;
+    line-height: 1.11;
+  }
+  .hero-subtitle {
+    font-size: 19px;
+  }
+}
+
+/* ============================================================
+   MAIN CONTENT
+   ============================================================ */
+.main-content {
+  position: relative;
+  z-index: 1;
+}
+
+/* ---------- HIG Typography ---------- */
+.hig-caption1 {
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.33;
+  letter-spacing: 0px;
+}
+
+.color-label-3 { color: var(--label-3); }
+
+/* ---------- Grouped Card (frosted glass on dark) ---------- */
+.grouped-card {
+  background: var(--card-bg);
+  backdrop-filter: blur(40px) saturate(180%);
+  -webkit-backdrop-filter: blur(40px) saturate(180%);
+  border: 1px solid var(--card-border);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: var(--card-shadow);
+}
+
+.card-elevated {
+  box-shadow: var(--card-shadow-elevated);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+/* ---------- Section Header ---------- */
+.section-header {
+  font-size: 13px;
+  line-height: 1.38;
+  letter-spacing: -0.08px;
+  font-weight: 600;
+  color: var(--label-2);
+  text-transform: uppercase;
+  padding: 0 16px 8px;
+}
+
+/* ---------- Password Text ---------- */
+.password-text {
+  font-size: 16px;
+  line-height: 1.375;
+  letter-spacing: -0.24px;
+  color: var(--label);
+  user-select: all;
+  -webkit-user-select: all;
+}
+
+/* ---------- Copy Button ---------- */
+.copy-btn {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border: none;
+  border-radius: 22px;
+  background: transparent;
+  color: var(--sys-blue);
+  cursor: pointer;
+  transition: background 0.2s cubic-bezier(0.25, 0.1, 0.3, 1);
+}
+
+.copy-btn:hover  { background: var(--fill-4); }
+.copy-btn:active { background: var(--fill-3); }
+
+.copy-btn .icon-check        { display: none; color: var(--sys-green); }
+.copy-btn.copied .icon-copy  { display: none; }
+.copy-btn.copied .icon-check { display: block; }
+
+/* ---------- Strength Segments ---------- */
+.strength-seg {
+  flex: 1;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--sys-gray5);
+  transition: background-color 0.3s cubic-bezier(0.25, 0.1, 0.3, 1);
+}
+
+.strength-label {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: -0.08px;
+  min-width: 56px;
+  text-align: right;
+  color: var(--label-2);
+}
+
+/* ---------- Slider ---------- */
+.slider-bound {
+  font-size: 15px;
+  letter-spacing: -0.24px;
+  color: var(--label-2);
+  font-variant-numeric: tabular-nums;
+  min-width: 20px;
+  text-align: center;
+}
+
+.slider-value {
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: -0.41px;
+  color: var(--sys-blue);
+  font-variant-numeric: tabular-nums;
+  min-width: 28px;
+  text-align: right;
+}
+
+.range-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  flex: 1;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--sys-gray5);
+  outline: none;
+  cursor: pointer;
+}
+
+.range-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #ffffff;
+  border: 0.5px solid rgba(0, 0, 0, 0.04);
+  box-shadow: 0 0.5px 4px rgba(0, 0, 0, 0.3), 0 0.5px 1px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+}
+
+.range-slider::-moz-range-thumb {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #ffffff;
+  border: 0.5px solid rgba(0, 0, 0, 0.04);
+  box-shadow: 0 0.5px 4px rgba(0, 0, 0, 0.3), 0 0.5px 1px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+}
+
+.range-slider::-moz-range-track {
+  height: 4px;
+  border-radius: 2px;
+  background: transparent;
+}
+
+/* ---------- Toggle Cell ---------- */
+.toggle-cell {
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 10px 16px;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.toggle-cell:hover {
+  background: var(--fill-4);
+}
+
+.toggle-cell:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 16px;
+  right: 0;
+  height: 0.5px;
+  background: var(--separator);
+}
+
+.cell-label {
+  font-size: 17px;
+  font-weight: 400;
+  line-height: 1.29;
+  letter-spacing: -0.41px;
+  color: var(--label);
+}
+
+.cell-detail {
+  font-size: 15px;
+  font-weight: 400;
+  letter-spacing: -0.24px;
+  color: var(--label-3);
+  margin-right: 12px;
+}
+
+.toggle-cell input[type="checkbox"] {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+
+/* iOS Toggle — 51 x 31 per HIG */
+.toggle {
+  position: relative;
+  flex-shrink: 0;
+  width: 51px;
+  height: 31px;
+  border-radius: 15.5px;
+  background: var(--toggle-off);
+  transition: background 0.3s cubic-bezier(0.25, 0.1, 0.3, 1);
+}
+
+.toggle::after {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 27px;
+  height: 27px;
+  border-radius: 50%;
+  background: #ffffff;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3), 0 1px 1px rgba(0, 0, 0, 0.15);
+  transition: transform 0.3s cubic-bezier(0.25, 0.1, 0.3, 1);
+}
+
+input[type="checkbox"]:checked + .toggle {
+  background: var(--toggle-on);
+}
+
+input[type="checkbox"]:checked + .toggle::after {
+  transform: translateX(20px);
+}
+
+/* ---------- Primary Button — Pill ---------- */
+.btn-filled {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 52px;
+  border: none;
+  border-radius: 980px;
+  font-family: inherit;
+  font-size: 17px;
+  font-weight: 400;
+  letter-spacing: -0.022em;
+  color: #ffffff;
+  background: var(--sys-blue);
+  cursor: pointer;
+  transition: background 0.3s cubic-bezier(0.25, 0.1, 0.3, 1),
+              transform 0.15s cubic-bezier(0.25, 0.1, 0.3, 1);
+}
+
+.btn-filled:hover {
+  background: #4db3ff;
+}
+
+.btn-filled:active {
+  transform: scale(0.98);
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 390px) {
+  .password-text {
+    font-size: 14px;
+  }
+}
+
+/* ---------- Reduced Motion ---------- */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+}

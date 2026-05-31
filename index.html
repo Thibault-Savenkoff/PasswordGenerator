@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Password Generator</title>
+
+  <!-- Inter + JetBrains Mono (closest web match to SF Pro + SF Mono) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS Play CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: "media",
+      theme: {
+        fontFamily: {
+          sans: ["Inter", "-apple-system", "BlinkMacSystemFont", "SF Pro Display", "SF Pro Text", "Helvetica Neue", "Helvetica", "Arial", "sans-serif"],
+          mono: ["JetBrains Mono", "SF Mono", "SFMono-Regular", "ui-monospace", "Menlo", "monospace"],
+        },
+      },
+    };
+  </script>
+
+  <script type="importmap">{"imports":{"web-haptics":"https://esm.sh/web-haptics"}}</script>
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔐</text></svg>">
+
+  <!-- zxcvbn — password strength estimator -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/zxcvbn/4.4.2/zxcvbn.js" integrity="sha512-TZlMGFY9xKj38t/5m2FzJ+RM/aD5alMHDe26p0mYUMoCF5G7ibfHUQILq0qQPV3wlsnCwL+TPRNK4vIWGLOkUQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+</head>
+<body>
+
+  <!-- ===== Hero Section (dark, Apple product-page style) ===== -->
+  <section class="hero">
+    <div class="hero-content mx-auto max-w-[680px] px-6 text-center">
+      <div class="hero-icon-wrap">
+        <svg class="hero-icon" width="56" height="56" viewBox="0 0 56 56" fill="none">
+          <rect x="9" y="23" width="38" height="26" rx="7" stroke="currentColor" stroke-width="2.5" fill="none"/>
+          <path d="M18 23V16a10 10 0 1 1 20 0v7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+          <circle cx="28" cy="36" r="3.5" fill="currentColor"/>
+          <line x1="28" y1="39.5" x2="28" y2="43" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <h1 class="hero-title">Password Generator</h1>
+      <p class="hero-subtitle">Create strong, unique passwords in&nbsp;an&nbsp;instant.</p>
+    </div>
+  </section>
+
+  <!-- ===== Main Content ===== -->
+  <main class="main-content mx-auto w-full max-w-[520px] px-4 pb-12 sm:px-5">
+
+    <!-- Password Output -->
+    <section class="mt-8">
+      <div class="grouped-card card-elevated">
+        <div class="flex items-center gap-2 px-4 py-3.5 min-h-[56px]">
+          <output id="password" class="password-text flex-1 font-mono font-medium break-all select-all" aria-live="polite"></output>
+          <button id="copy-btn" class="copy-btn" title="Copy to clipboard" aria-label="Copy password">
+            <svg class="icon-copy" width="22" height="22" viewBox="0 0 22 22" fill="none">
+              <rect x="7" y="7" width="12" height="12" rx="2.5" stroke="currentColor" stroke-width="1.5"/>
+              <path d="M15 7V5a3 3 0 0 0-3-3H5a3 3 0 0 0-3 3v7a3 3 0 0 0 3 3h2" stroke="currentColor" stroke-width="1.5"/>
+            </svg>
+            <svg class="icon-check" width="22" height="22" viewBox="0 0 22 22" fill="none">
+              <polyline points="5,11 9,15 17,7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Strength -->
+      <div class="flex items-center gap-2.5 px-1 pt-3">
+        <div class="flex flex-1 gap-[3px]">
+          <span class="strength-seg"></span>
+          <span class="strength-seg"></span>
+          <span class="strength-seg"></span>
+          <span class="strength-seg"></span>
+        </div>
+        <span id="strength-label" class="strength-label"></span>
+      </div>
+      <p id="strength-feedback" class="hig-caption1 color-label-3 px-1 pt-1 min-h-[16px]"></p>
+    </section>
+
+    <!-- Length -->
+    <section class="mt-8">
+      <h2 class="section-header">Length</h2>
+      <div class="grouped-card">
+        <div class="flex items-center gap-2.5 px-4 py-2.5 min-h-[48px]">
+          <span class="slider-bound">4</span>
+          <input type="range" id="length-slider" min="4" max="64" value="20" class="range-slider" aria-label="Password length">
+          <span class="slider-bound">64</span>
+          <span id="length-value" class="slider-value">20</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Character Options -->
+    <section class="mt-8">
+      <h2 class="section-header">Characters</h2>
+      <div class="grouped-card">
+        <label class="toggle-cell">
+          <span class="cell-label flex-1">Uppercase Letters</span>
+          <span class="cell-detail">A–Z</span>
+          <input type="checkbox" id="opt-upper" checked>
+          <span class="toggle"></span>
+        </label>
+        <label class="toggle-cell">
+          <span class="cell-label flex-1">Lowercase Letters</span>
+          <span class="cell-detail">a–z</span>
+          <input type="checkbox" id="opt-lower" checked>
+          <span class="toggle"></span>
+        </label>
+        <label class="toggle-cell">
+          <span class="cell-label flex-1">Numbers</span>
+          <span class="cell-detail">0–9</span>
+          <input type="checkbox" id="opt-numbers" checked>
+          <span class="toggle"></span>
+        </label>
+        <label class="toggle-cell">
+          <span class="cell-label flex-1">Symbols</span>
+          <span class="cell-detail">!@#$</span>
+          <input type="checkbox" id="opt-symbols" checked>
+          <span class="toggle"></span>
+        </label>
+      </div>
+    </section>
+
+    <!-- Generate -->
+    <section class="mt-10">
+      <button id="generate-btn" class="btn-filled w-full">
+        Generate New Password
+      </button>
+    </section>
+
+    <!-- Footer -->
+    <footer class="mt-10 text-center px-4">
+      <p class="hig-caption1 color-label-3">Passwords are generated entirely on&#x2011;device using the Web Crypto API.<br>Nothing is stored or transmitted.</p>
+    </footer>
+
+  </main>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>
