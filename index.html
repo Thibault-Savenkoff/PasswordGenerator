@@ -3,6 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Passwords">
+  <meta name="theme-color" content="#1d1d1f">
+  <link rel="manifest" href="manifest.json">
   <title>Password Generator</title>
 
   <!-- Inter + JetBrains Mono (closest web match to SF Pro + SF Mono) -->
@@ -24,8 +29,7 @@
     };
   </script>
 
-  <script type="importmap">{"imports":{"web-haptics":"https://esm.sh/web-haptics"}}</script>
-  <link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="style.css">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔐</text></svg>">
 
   <!-- zxcvbn — password strength estimator -->
@@ -123,6 +127,12 @@
           <input type="checkbox" id="opt-symbols" checked>
           <span class="toggle"></span>
         </label>
+        <label class="toggle-cell">
+          <span class="cell-label flex-1">Exclude Ambiguous</span>
+          <span class="cell-detail">0Ol1I</span>
+          <input type="checkbox" id="opt-no-ambiguous">
+          <span class="toggle"></span>
+        </label>
       </div>
     </section>
 
@@ -140,6 +150,6 @@
 
   </main>
 
-  <script type="module" src="app.js"></script>
+  <script src="app.js"></script>
 </body>
 </html>

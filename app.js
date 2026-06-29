@@ -2,12 +2,25 @@
    Password Generator — Logic (zxcvbn strength estimation)
    ============================================================ */
 
-import { WebHaptics } from "web-haptics";
-
 (() => {
   "use strict";
 
-  const haptic = new WebHaptics();
+  // ponytail: inline web-haptics — iOS via input[switch].click(), Android via navigator.vibrate()
+  const haptic = (() => {
+    const sw = document.createElement("input");
+    sw.type = "checkbox";
+    sw.setAttribute("switch", "");
+    sw.style.cssText = "position:fixed;opacity:0;pointer-events:none;width:0;height:0";
+    document.body.appendChild(sw);
+    const ms = { light: [10], selection: [8], medium: [20], heavy: [40],
+                 success: [10, 40, 10], warning: [20, 40, 20], error: [10, 30, 10, 30, 10] };
+    return {
+      trigger(type = "medium") {
+        sw.click();
+        if (navigator.vibrate) navigator.vibrate(ms[type] ?? [20]);
+      },
+    };
+  })();
 
   const els = {
     password: document.getElementById("password"),
@@ -22,6 +35,7 @@ import { WebHaptics } from "web-haptics";
     optLower: document.getElementById("opt-lower"),
     optNumbers: document.getElementById("opt-numbers"),
     optSymbols: document.getElementById("opt-symbols"),
+    optNoAmbiguous: document.getElementById("opt-no-ambiguous"),
   };
 
   const CHARSETS = {
@@ -31,6 +45,8 @@ import { WebHaptics } from "web-haptics";
     symbols: "!@#$%^&*()_+-=[]{}|;:,.<>?",
   };
 
+  const AMBIGUOUS = new Set("0Ol1I");
+
   // zxcvbn scores 0-4 mapped to Apple system colours & labels
   const STRENGTH_MAP = [
     { label: "Very Weak", color: "var(--sys-red)",    segs: 1 },  // 0
@@ -39,6 +55,23 @@ import { WebHaptics } from "web-haptics";
     { label: "Good",      color: "var(--sys-green)",  segs: 3 },  // 3
     { label: "Strong",    color: "var(--sys-blue)",   segs: 4 },  // 4
   ];
+
+  function charClass(ch) {
+    if (/[A-Z]/.test(ch)) return "ch-upper";
+    if (/[a-z]/.test(ch)) return "ch-lower";
+    if (/[0-9]/.test(ch)) return "ch-num";
+    return "ch-sym";
+  }
+
+  function renderPassword(password) {
+    els.password.textContent = "";
+    for (const ch of password) {
+      const span = document.createElement("span");
+      span.textContent = ch;
+      span.className = charClass(ch);
+      els.password.appendChild(span);
+    }
+  }
 
   function secureRandom(max) {
     const array = new Uint32Array(1);
@@ -54,13 +87,18 @@ import { WebHaptics } from "web-haptics";
       symbols: els.optSymbols.checked,
     };
 
+    const noAmbiguous = els.optNoAmbiguous.checked;
+    const filter = (s) => noAmbiguous ? s.split("").filter((c) => !AMBIGUOUS.has(c)).join("") : s;
+
     let pool = "";
     const required = [];
 
     for (const [key, enabled] of Object.entries(opts)) {
       if (enabled) {
-        pool += CHARSETS[key];
-        required.push(CHARSETS[key][secureRandom(CHARSETS[key].length)]);
+        const charset = filter(CHARSETS[key]);
+        if (charset.length === 0) continue;
+        pool += charset;
+        required.push(charset[secureRandom(charset.length)]);
       }
     }
 
@@ -83,7 +121,7 @@ import { WebHaptics } from "web-haptics";
     }
 
     const password = chars.join("");
-    els.password.textContent = password;
+    renderPassword(password);
 
     // Use zxcvbn for strength analysis
     const result = zxcvbn(password);
@@ -159,7 +197,6 @@ import { WebHaptics } from "web-haptics";
   });
 
   els.copyBtn.addEventListener("click", () => {
-    haptic.trigger("light");
     copyPassword();
   });
 
@@ -199,7 +236,14 @@ import { WebHaptics } from "web-haptics";
     });
   });
 
+  els.optNoAmbiguous.addEventListener("change", () => {
+    haptic.trigger("light");
+    generate();
+  });
+
   // Init
   updateSliderTrack();
   generate();
+
+  if ("serviceWorker" in navigator) navigator.serviceWorker.register("./sw.js");
 })();

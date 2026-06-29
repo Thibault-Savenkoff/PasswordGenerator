@@ -171,13 +171,18 @@ body::before {
 
 /* ---------- Password Text ---------- */
 .password-text {
-  font-size: 16px;
-  line-height: 1.375;
-  letter-spacing: -0.24px;
+  font-size: 19px;
+  line-height: 1.5;
+  letter-spacing: 0.04em;
   color: var(--label);
   user-select: all;
   -webkit-user-select: all;
 }
+
+.ch-upper { color: var(--label); }
+.ch-lower { color: var(--label-2); }
+.ch-num   { color: var(--sys-orange); }
+.ch-sym   { color: var(--sys-blue); }
 
 /* ---------- Copy Button ---------- */
 .copy-btn {
@@ -390,7 +395,7 @@ input[type="checkbox"]:checked + .toggle::after {
 /* ---------- Responsive ---------- */
 @media (max-width: 390px) {
   .password-text {
-    font-size: 14px;
+    font-size: 16px;
   }
 }
 
